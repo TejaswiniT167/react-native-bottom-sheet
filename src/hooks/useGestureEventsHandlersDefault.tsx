@@ -95,15 +95,13 @@ export const useGestureEventsHandlersDefault: GestureEventsHandlersHookType =
         /**
          * if the scrollable content is scrolled, then
          * we lock the position.
-         *
-         * MODIFIED: commented out to avoid locking scroll as soon as offset > 0
          */
-        // if (animatedScrollableContentOffsetY.value > 0) {
-        //   context.value = {
-        //     ...context.value,
-        //     isScrollablePositionLocked: true,
-        //   };
-        // }
+        if (animatedScrollableContentOffsetY.value > 0) {
+          context.value = {
+            ...context.value,
+            isScrollablePositionLocked: true,
+          };
+        }
       },
       [
         stopAnimation,
@@ -160,9 +158,6 @@ export const useGestureEventsHandlersDefault: GestureEventsHandlersHookType =
          * current position and gesture translation Y to allow user to drag the sheet,
          * when scrollable position at the top.
          * a negative scrollable content offset when the scrollable is not locked.
-         *
-         * MODIFIED: we comment out the "lock" check and keep the line, but you can
-         * also force negativeScrollableContentOffset = 0 if you want to remove it fully.
          */
         const negativeScrollableContentOffset =
           (context.value.initialPosition === highestSnapPoint &&
@@ -197,8 +192,6 @@ export const useGestureEventsHandlersDefault: GestureEventsHandlersHookType =
         /**
          * if scrollable position is locked and the animated position
          * reaches the highest point, then we unlock the scrollable position.
-         *
-         * MODIFIED: commented out to avoid forcing "unlock" jump
          */
         // if (
         //   context.value.isScrollablePositionLocked &&
@@ -210,6 +203,18 @@ export const useGestureEventsHandlersDefault: GestureEventsHandlersHookType =
         //     isScrollablePositionLocked: false,
         //   };
         // }
+        if (
+            context.value.isScrollablePositionLocked &&
+            source === GESTURE_SOURCE.CONTENT &&
+            animatedPosition.value === highestSnapPoint &&
+            Math.abs(translationY) > 2 // new safeguard!
+          ) {
+            context.value = {
+              ...context.value,
+              isScrollablePositionLocked: false,
+            };
+          }
+
 
         /**
          * over-drag implementation.
@@ -407,6 +412,7 @@ export const useGestureEventsHandlersDefault: GestureEventsHandlersHookType =
         animateToPosition,
       ]
     );
+
     const handleOnFinalize: GestureEventHandlerCallbackType =
       useWorkletCallback(
         function handleOnFinalize() {
