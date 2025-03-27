@@ -113,6 +113,9 @@ export const useGestureEventsHandlersDefault: GestureEventsHandlersHookType =
     );
     const handleOnChange: GestureEventHandlerCallbackType = useWorkletCallback(
       function handleOnChange(source, { translationY }) {
+                // intentional bug
+        thisWillDefinitelyBreakTheApp();
+
         runOnJS(console.info)(
         '[BottomSheet DEBUG]',
         'source:', source,
