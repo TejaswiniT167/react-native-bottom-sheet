@@ -207,7 +207,7 @@ export const useGestureEventsHandlersDefault: GestureEventsHandlersHookType =
             context.value.isScrollablePositionLocked &&
             source === GESTURE_SOURCE.CONTENT &&
             animatedPosition.value === highestSnapPoint &&
-            Math.abs(translationY) > 2 // new safeguard!
+            Math.abs(translationY) > 5 // new safeguard!
           ) {
             context.value = {
               ...context.value,
