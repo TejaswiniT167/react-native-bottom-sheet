@@ -113,6 +113,15 @@ export const useGestureEventsHandlersDefault: GestureEventsHandlersHookType =
     );
     const handleOnChange: GestureEventHandlerCallbackType = useWorkletCallback(
       function handleOnChange(source, { translationY }) {
+        runOnJS(console.log)(
+          '[BottomSheet DEBUG]',
+          'source:', source,
+          'translationY:', translationY,
+          'offsetY:', animatedScrollableContentOffsetY.value,
+          'isLocked:', context.value.isScrollablePositionLocked,
+          'position:', animatedPosition.value
+        );
+
         let highestSnapPoint = animatedHighestSnapPoint.value;
 
         /**
