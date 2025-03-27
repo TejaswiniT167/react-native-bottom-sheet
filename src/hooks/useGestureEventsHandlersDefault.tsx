@@ -1,9 +1,3 @@
-/* 
-  useGestureEventsHandlersDefault.tsx
-  Full file from your snippet, with two blocks commented out (marked as MODIFIED) 
-  to stop abrupt jumps when slowly dragging from bottom content.
-*/
-
 import { Keyboard, Platform } from 'react-native';
 import {
   runOnJS,
@@ -82,7 +76,7 @@ export const useGestureEventsHandlersDefault: GestureEventsHandlersHookType =
         stopAnimation();
 
         let initialKeyboardState = animatedKeyboardState.value;
-        // blur the keyboard when user starts dragging the bottom sheet
+        // blur the keyboard when user start dragging the bottom sheet
         if (
           enableBlurKeyboardOnGesture &&
           initialKeyboardState === KEYBOARD_STATE.SHOWN
@@ -102,8 +96,7 @@ export const useGestureEventsHandlersDefault: GestureEventsHandlersHookType =
          * if the scrollable content is scrolled, then
          * we lock the position.
          *
-         * MODIFIED: commented out so we don't lock scrollable position 
-         * when user has scrolled content above 0
+         * MODIFIED: commented out to avoid locking scroll as soon as offset > 0
          */
         // if (animatedScrollableContentOffsetY.value > 0) {
         //   context.value = {
@@ -120,7 +113,6 @@ export const useGestureEventsHandlersDefault: GestureEventsHandlersHookType =
         animatedScrollableContentOffsetY,
       ]
     );
-
     const handleOnChange: GestureEventHandlerCallbackType = useWorkletCallback(
       function handleOnChange(source, { translationY }) {
         let highestSnapPoint = animatedHighestSnapPoint.value;
@@ -137,9 +129,8 @@ export const useGestureEventsHandlersDefault: GestureEventsHandlersHookType =
         }
 
         /**
-         * if current position is out of provided `snapPoints` and smaller
-         * than highest snap point, then we set the highest point 
-         * to the current position.
+         * if current position is out of provided `snapPoints` and smaller then
+         * highest snap pont, then we set the highest point to the current position.
          */
         if (
           isInTemporaryPosition.value &&
@@ -169,6 +160,9 @@ export const useGestureEventsHandlersDefault: GestureEventsHandlersHookType =
          * current position and gesture translation Y to allow user to drag the sheet,
          * when scrollable position at the top.
          * a negative scrollable content offset when the scrollable is not locked.
+         *
+         * MODIFIED: we comment out the "lock" check and keep the line, but you can
+         * also force negativeScrollableContentOffset = 0 if you want to remove it fully.
          */
         const negativeScrollableContentOffset =
           (context.value.initialPosition === highestSnapPoint &&
@@ -184,15 +178,15 @@ export const useGestureEventsHandlersDefault: GestureEventsHandlersHookType =
 
         /**
          * an accumulated value of dragged position and negative scrollable content offset,
-         * this will ensure locking sheet position when user is scrolling the scrollable 
-         * until they reach the top of the scrollable.
+         * this will insure locking sheet position when user is scrolling the scrollable until,
+         * they reach to the top of the scrollable.
          */
         const accumulatedDraggedPosition =
           draggedPosition + negativeScrollableContentOffset;
 
         /**
-         * a clamped value of the accumulated dragged position, to ensure 
-         * keeping the dragged position between the highest and lowest snap points.
+         * a clamped value of the accumulated dragged position, to insure keeping the dragged
+         * position between the highest and lowest snap points.
          */
         const clampedPosition = clamp(
           accumulatedDraggedPosition,
@@ -204,7 +198,7 @@ export const useGestureEventsHandlersDefault: GestureEventsHandlersHookType =
          * if scrollable position is locked and the animated position
          * reaches the highest point, then we unlock the scrollable position.
          *
-         * MODIFIED: commented out to avoid abrupt "jump to top"
+         * MODIFIED: commented out to avoid forcing "unlock" jump
          */
         // if (
         //   context.value.isScrollablePositionLocked &&
@@ -280,7 +274,6 @@ export const useGestureEventsHandlersDefault: GestureEventsHandlersHookType =
         animatedScrollableContentOffsetY,
       ]
     );
-
     const handleOnEnd: GestureEventHandlerCallbackType = useWorkletCallback(
       function handleOnEnd(source, { translationY, absoluteY, velocityY }) {
         const highestSnapPoint = animatedHighestSnapPoint.value;
@@ -338,7 +331,7 @@ export const useGestureEventsHandlersDefault: GestureEventsHandlersHookType =
            * the end touch point is below the keyboard position then
            * we exit the method.
            *
-           * because the keyboard dismiss is interactive in iOS.
+           * because the the keyboard dismiss is interactive in iOS.
            */
           if (
             !(
@@ -414,7 +407,6 @@ export const useGestureEventsHandlersDefault: GestureEventsHandlersHookType =
         animateToPosition,
       ]
     );
-
     const handleOnFinalize: GestureEventHandlerCallbackType =
       useWorkletCallback(
         function handleOnFinalize() {
